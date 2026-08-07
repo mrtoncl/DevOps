@@ -1,0 +1,51 @@
+services:
+    postgres:
+        image: postgres:18-alpine
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+            - "5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql
+            - ./Backend/Database_backup/mro_database_dump:/docker-entrypoint_initdb.d/01-init.sql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+            interval: 5s
+            timeout: 3s
+            retries: 5
+            start_period: 10s
+
+    fastapi:
+        build: ./Fastapi
+        ports:
+            - "8000:8000"
+        healthcheck:
+            test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+                
+    backend:
+        build: ./Backend 
+        ports: 
+            - "8080:8080"
+        env_file:
+            - .env    
+        depends_on:
+            postgres:
+                condition: service_healthy
+            fastapi:
+                condition: service_healthy    
+
+    frontend:
+        build: ./Frontend 
+        ports:
+            - "3000:80"
+        depends_on:
+            - backend
+
+volumes:
+    pgdata:                    

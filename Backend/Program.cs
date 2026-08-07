@@ -5,11 +5,13 @@ using BCrypt.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = "Host=localhost;Database=postgres;Username=postgres;Password=";
+var connectionString = builder.Configuration["DB_CONNECTION_STRING"]
+    ?? "Host=postgres;Database=postgres;Username=postgres;Password=";
 
 builder.Services.AddCors();
 
-builder.Services.AddHttpClient("ml", c => c.BaseAddress = new Uri("http://127.0.0.1:8000"));
+var fastApiUrl = builder.Configuration["FASTAPI_URL"] ?? "http://fastapi:8000";
+builder.Services.AddHttpClient("ml", c => c.BaseAddress = new Uri(fastApiUrl));
 
 builder.Services.AddSingleton<IPartRepository, CsvPartRepository>();
 
