@@ -1,6 +1,7 @@
 services:
     postgres:
         image: postgres:18-alpine
+        command: ["postgres", "-c", "log_min_duration_statement=0"]
         environment:
             POSTGRES_DB: ${POSTGRES_DB}
             POSTGRES_USER: ${POSTGRES_USER}
