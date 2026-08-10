@@ -3,6 +3,7 @@ using Npgsql;
 using Dapper;
 using BCrypt.Net;
 using DbUp;
+using MroBackend.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -131,14 +132,11 @@ app.MapPost("/api/orders", async (OrderRequest request) =>
 
 app.MapPost("/api/register", async (RegisterRequest request) =>
 {
-    if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.FullName))
-    {
-        return Results.BadRequest(new { message = "Username and full name are required." });
-    }
-    if (string.IsNullOrEmpty(request.Password) || request.Password.Length < 4)
-    {
-        return Results.BadRequest(new { message = "Password must be at least 4 characters." });
-    }
+    var validationError = RegistrationValidator.Validate(request.Username, request.FullName, request.Password);
+	if (validationError != null)
+	{	
+    		return Results.BadRequest(new { message = validationError });
+	}
 
     await using var connection = new NpgsqlConnection(connectionString);
 
