@@ -2,11 +2,26 @@ using System.Text.Json.Serialization;
 using Npgsql;
 using Dapper;
 using BCrypt.Net;
+using DbUp;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration["DB_CONNECTION_STRING"]
     ?? "Host=postgres;Database=postgres;Username=postgres;Password=";
+
+var upgrader = DeployChanges.To
+    .PostgresqlDatabase(connectionString)
+    .WithScriptsFromFileSystem("Migrations")
+    .LogToConsole()
+    .Build();
+
+var migrationResult = upgrader.PerformUpgrade();
+if (!migrationResult.Successful)
+{
+    Console.WriteLine(migrationResult.Error);
+    Environment.Exit(-1);
+}
+Console.WriteLine("Migration'lar başarıyla uygulandı.");
 
 builder.Services.AddCors();
 

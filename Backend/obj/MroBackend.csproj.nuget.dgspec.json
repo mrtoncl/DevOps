@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/muratemir/Desktop/AlbarakaTech Global/DevOps Uygulama/Backend/MroBackend.csproj": {}
+    "/Users/muratemir/Documents/GitHub/DevOps/Backend/MroBackend.csproj": {}
   },
   "projects": {
-    "/Users/muratemir/Desktop/AlbarakaTech Global/DevOps Uygulama/Backend/MroBackend.csproj": {
+    "/Users/muratemir/Documents/GitHub/DevOps/Backend/MroBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/muratemir/Desktop/AlbarakaTech Global/DevOps Uygulama/Backend/MroBackend.csproj",
+        "projectUniqueName": "/Users/muratemir/Documents/GitHub/DevOps/Backend/MroBackend.csproj",
         "projectName": "MroBackend",
-        "projectPath": "/Users/muratemir/Desktop/AlbarakaTech Global/DevOps Uygulama/Backend/MroBackend.csproj",
+        "projectPath": "/Users/muratemir/Documents/GitHub/DevOps/Backend/MroBackend.csproj",
         "packagesPath": "/Users/muratemir/.nuget/packages/",
-        "outputPath": "/Users/muratemir/Desktop/AlbarakaTech Global/DevOps Uygulama/Backend/obj/",
+        "outputPath": "/Users/muratemir/Documents/GitHub/DevOps/Backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/muratemir/.nuget/NuGet/NuGet.Config"
@@ -57,6 +57,10 @@
             "Npgsql": {
               "target": "Package",
               "version": "[10.0.3, )"
+            },
+            "dbup-postgresql": {
+              "target": "Package",
+              "version": "[7.0.1, )"
             }
           },
           "imports": [
