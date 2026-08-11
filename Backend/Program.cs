@@ -4,6 +4,7 @@ using Dapper;
 using BCrypt.Net;
 using DbUp;
 using MroBackend.Validation;
+using MroBackend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ var fastApiUrl = builder.Configuration["FASTAPI_URL"] ?? "http://fastapi:8000";
 builder.Services.AddHttpClient("ml", c => c.BaseAddress = new Uri(fastApiUrl));
 
 builder.Services.AddSingleton<IPartRepository, CsvPartRepository>();
+
+builder.Services.AddSingleton(new UserRepository(connectionString));
 
 var app = builder.Build();
 
@@ -130,40 +133,27 @@ app.MapPost("/api/orders", async (OrderRequest request) =>
     return Results.Ok(new { message = "Sipariş kaydedildi." });
 });
 
-app.MapPost("/api/register", async (RegisterRequest request) =>
+app.MapPost("/api/register", async (RegisterRequest request, UserRepository userRepository) =>
 {
     var validationError = RegistrationValidator.Validate(request.Username, request.FullName, request.Password);
-	if (validationError != null)
-	{	
-    		return Results.BadRequest(new { message = validationError });
-	}
+    if (validationError != null)
+    {
+        return Results.BadRequest(new { message = validationError });
+    }
 
-    await using var connection = new NpgsqlConnection(connectionString);
-
-    var existing = await connection.QuerySingleOrDefaultAsync<int?>(
-        "SELECT id FROM users WHERE username = @Username",
-        new { request.Username }
-    );
-    if (existing != null)
+    if (await userRepository.UsernameExistsAsync(request.Username))
     {
         return Results.Conflict(new { message = "Bu kullanıcı adı zaten alınmış." });
     }
 
-    var roleId = await connection.QuerySingleOrDefaultAsync<int?>(
-        "SELECT id FROM roles WHERE name = @RoleName",
-        new { request.RoleName }
-    );
+    var roleId = await userRepository.GetRoleIdAsync(request.RoleName);
     if (roleId == null)
     {
         return Results.BadRequest(new { message = "Geçersiz rol." });
     }
 
     var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-    await connection.ExecuteAsync(
-        "INSERT INTO users (username, password_hash, full_name, role_id) VALUES (@Username, @PasswordHash, @FullName, @RoleId)",
-        new { request.Username, PasswordHash = passwordHash, request.FullName, RoleId = roleId }
-    );
+    await userRepository.RegisterAsync(request.Username, passwordHash, request.FullName, roleId.Value);
 
     return Results.Ok(new { message = "Kayıt başarılı." });
 });

@@ -111,3 +111,16 @@
 /Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/obj/Debug/net10.0/MroBackend.Tests.pdb
 /Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/obj/Debug/net10.0/MroBackend.Tests.genruntimeconfig.cache
 /Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/obj/Debug/net10.0/ref/MroBackend.Tests.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/BouncyCastle.Cryptography.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Docker.DotNet.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Docker.DotNet.Handler.Abstractions.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Docker.DotNet.LegacyHttp.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Microsoft.Net.Http.Client.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Docker.DotNet.NativeHttp.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Docker.DotNet.NPipe.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Docker.DotNet.Unix.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Docker.DotNet.X509.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/ICSharpCode.SharpZipLib.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Renci.SshNet.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Testcontainers.dll
+/Users/muratemir/Documents/GitHub/DevOps/Backend.Tests/bin/Debug/net10.0/Testcontainers.PostgreSql.dll

@@ -11,6 +11,19 @@
           "lib/net10.0/BCrypt-Net-Next.dll": {}
         }
       },
+      "BouncyCastle.Cryptography/2.6.2": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/BouncyCastle.Cryptography.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/BouncyCastle.Cryptography.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "coverlet.collector/6.0.4": {
         "type": "package",
         "build": {
@@ -61,6 +74,131 @@
           "lib/net8.0/dbup-postgresql.dll": {
             "related": ".xml"
           }
+        }
+      },
+      "Docker.DotNet.Enhanced/4.3.3": {
+        "type": "package",
+        "dependencies": {
+          "Docker.DotNet.Enhanced.Handler.Abstractions": "4.3.3",
+          "Docker.DotNet.Enhanced.LegacyHttp": "4.3.3",
+          "Docker.DotNet.Enhanced.NPipe": "4.3.3",
+          "Docker.DotNet.Enhanced.NativeHttp": "4.3.3",
+          "Docker.DotNet.Enhanced.Unix": "4.3.3",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
+        },
+        "compile": {
+          "lib/net10.0/Docker.DotNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Docker.DotNet.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Docker.DotNet.Enhanced.Handler.Abstractions/4.3.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
+        },
+        "compile": {
+          "lib/net10.0/Docker.DotNet.Handler.Abstractions.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Docker.DotNet.Handler.Abstractions.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Docker.DotNet.Enhanced.LegacyHttp/4.3.3": {
+        "type": "package",
+        "dependencies": {
+          "Docker.DotNet.Enhanced.Handler.Abstractions": "4.3.3"
+        },
+        "compile": {
+          "lib/net10.0/Docker.DotNet.LegacyHttp.dll": {
+            "related": ".xml"
+          },
+          "lib/net10.0/Microsoft.Net.Http.Client.dll": {}
+        },
+        "runtime": {
+          "lib/net10.0/Docker.DotNet.LegacyHttp.dll": {
+            "related": ".xml"
+          },
+          "lib/net10.0/Microsoft.Net.Http.Client.dll": {}
+        }
+      },
+      "Docker.DotNet.Enhanced.NativeHttp/4.3.3": {
+        "type": "package",
+        "dependencies": {
+          "Docker.DotNet.Enhanced.Handler.Abstractions": "4.3.3"
+        },
+        "compile": {
+          "lib/net10.0/Docker.DotNet.NativeHttp.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Docker.DotNet.NativeHttp.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Docker.DotNet.Enhanced.NPipe/4.3.3": {
+        "type": "package",
+        "dependencies": {
+          "Docker.DotNet.Enhanced.Handler.Abstractions": "4.3.3"
+        },
+        "compile": {
+          "lib/net10.0/Docker.DotNet.NPipe.dll": {
+            "related": ".xml"
+          },
+          "lib/net10.0/Microsoft.Net.Http.Client.dll": {}
+        },
+        "runtime": {
+          "lib/net10.0/Docker.DotNet.NPipe.dll": {
+            "related": ".xml"
+          },
+          "lib/net10.0/Microsoft.Net.Http.Client.dll": {}
+        }
+      },
+      "Docker.DotNet.Enhanced.Unix/4.3.3": {
+        "type": "package",
+        "dependencies": {
+          "Docker.DotNet.Enhanced.Handler.Abstractions": "4.3.3"
+        },
+        "compile": {
+          "lib/net10.0/Docker.DotNet.Unix.dll": {
+            "related": ".xml"
+          },
+          "lib/net10.0/Microsoft.Net.Http.Client.dll": {}
+        },
+        "runtime": {
+          "lib/net10.0/Docker.DotNet.Unix.dll": {
+            "related": ".xml"
+          },
+          "lib/net10.0/Microsoft.Net.Http.Client.dll": {}
+        }
+      },
+      "Docker.DotNet.Enhanced.X509/4.3.3": {
+        "type": "package",
+        "dependencies": {
+          "Docker.DotNet.Enhanced.Handler.Abstractions": "4.3.3"
+        },
+        "compile": {
+          "lib/net10.0/Docker.DotNet.X509.dll": {
+            "related": ".xml"
+          },
+          "lib/net10.0/Microsoft.Net.Http.Client.dll": {}
+        },
+        "runtime": {
+          "lib/net10.0/Docker.DotNet.X509.dll": {
+            "related": ".xml"
+          },
+          "lib/net10.0/Microsoft.Net.Http.Client.dll": {}
         }
       },
       "Microsoft.CodeCoverage/17.14.1": {
@@ -404,6 +542,72 @@
           }
         }
       },
+      "SharpZipLib/1.4.2": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/ICSharpCode.SharpZipLib.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/ICSharpCode.SharpZipLib.dll": {
+            "related": ".pdb;.xml"
+          }
+        }
+      },
+      "SSH.NET/2025.1.0": {
+        "type": "package",
+        "dependencies": {
+          "BouncyCastle.Cryptography": "2.6.2",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
+        },
+        "compile": {
+          "lib/net9.0/Renci.SshNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Renci.SshNet.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Testcontainers/4.13.0": {
+        "type": "package",
+        "dependencies": {
+          "Docker.DotNet.Enhanced": "4.3.3",
+          "Docker.DotNet.Enhanced.X509": "4.3.3",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "SSH.NET": "2025.1.0",
+          "SharpZipLib": "1.4.2"
+        },
+        "compile": {
+          "lib/net10.0/Testcontainers.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Testcontainers.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "Testcontainers.PostgreSql/4.13.0": {
+        "type": "package",
+        "dependencies": {
+          "Testcontainers": "4.13.0"
+        },
+        "compile": {
+          "lib/net10.0/Testcontainers.PostgreSql.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net10.0/Testcontainers.PostgreSql.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "xunit/2.9.3": {
         "type": "package",
         "dependencies": {
@@ -547,6 +751,26 @@
         "readme.md"
       ]
     },
+    "BouncyCastle.Cryptography/2.6.2": {
+      "sha512": "7oWOcvnntmMKNzDLsdxAYqApt+AjpRpP2CShjMfIa3umZ42UQMvH0tl1qAliYPNYO6vTdcGMqnRrCPmsfzTI1w==",
+      "type": "package",
+      "path": "bouncycastle.cryptography/2.6.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.md",
+        "README.md",
+        "bouncycastle.cryptography.2.6.2.nupkg.sha512",
+        "bouncycastle.cryptography.nuspec",
+        "lib/net461/BouncyCastle.Cryptography.dll",
+        "lib/net461/BouncyCastle.Cryptography.xml",
+        "lib/net6.0/BouncyCastle.Cryptography.dll",
+        "lib/net6.0/BouncyCastle.Cryptography.xml",
+        "lib/netstandard2.0/BouncyCastle.Cryptography.dll",
+        "lib/netstandard2.0/BouncyCastle.Cryptography.xml",
+        "packageIcon.png"
+      ]
+    },
     "coverlet.collector/6.0.4": {
       "sha512": "lkhqpF8Pu2Y7IiN7OntbsTtdbpR1syMsm2F3IgX6ootA4ffRqWL5jF7XipHuZQTdVuWG/gVAAcf8mjk8Tz0xPg==",
       "type": "package",
@@ -667,6 +891,187 @@
         "lib/net8.0/dbup-postgresql.xml",
         "lib/netstandard2.0/dbup-postgresql.dll",
         "lib/netstandard2.0/dbup-postgresql.xml"
+      ]
+    },
+    "Docker.DotNet.Enhanced/4.3.3": {
+      "sha512": "nGicLwvd42FhRk+khY5uS6cx49ErNdwYKnYBg0F4m4BDKLp/R77AVmmN9xAiqI3W/wN5ZCHkdUhgxf5ORkZuFQ==",
+      "type": "package",
+      "path": "docker.dotnet.enhanced/4.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "docker.dotnet.enhanced.4.3.3.nupkg.sha512",
+        "docker.dotnet.enhanced.nuspec",
+        "icon.png",
+        "lib/net10.0/Docker.DotNet.dll",
+        "lib/net10.0/Docker.DotNet.xml",
+        "lib/net8.0/Docker.DotNet.dll",
+        "lib/net8.0/Docker.DotNet.xml",
+        "lib/net9.0/Docker.DotNet.dll",
+        "lib/net9.0/Docker.DotNet.xml",
+        "lib/netstandard2.0/Docker.DotNet.dll",
+        "lib/netstandard2.0/Docker.DotNet.xml",
+        "lib/netstandard2.1/Docker.DotNet.dll",
+        "lib/netstandard2.1/Docker.DotNet.xml"
+      ]
+    },
+    "Docker.DotNet.Enhanced.Handler.Abstractions/4.3.3": {
+      "sha512": "9Cp8hOgtynixcDoAs9lnEaQosluojSYmiW3fsLsLIVfZjlq/fznSIZNUhnmyT4Xo1Iyuok/y49WL/25O47u0Pw==",
+      "type": "package",
+      "path": "docker.dotnet.enhanced.handler.abstractions/4.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "docker.dotnet.enhanced.handler.abstractions.4.3.3.nupkg.sha512",
+        "docker.dotnet.enhanced.handler.abstractions.nuspec",
+        "icon.png",
+        "lib/net10.0/Docker.DotNet.Handler.Abstractions.dll",
+        "lib/net10.0/Docker.DotNet.Handler.Abstractions.xml",
+        "lib/net8.0/Docker.DotNet.Handler.Abstractions.dll",
+        "lib/net8.0/Docker.DotNet.Handler.Abstractions.xml",
+        "lib/net9.0/Docker.DotNet.Handler.Abstractions.dll",
+        "lib/net9.0/Docker.DotNet.Handler.Abstractions.xml",
+        "lib/netstandard2.0/Docker.DotNet.Handler.Abstractions.dll",
+        "lib/netstandard2.0/Docker.DotNet.Handler.Abstractions.xml",
+        "lib/netstandard2.1/Docker.DotNet.Handler.Abstractions.dll",
+        "lib/netstandard2.1/Docker.DotNet.Handler.Abstractions.xml"
+      ]
+    },
+    "Docker.DotNet.Enhanced.LegacyHttp/4.3.3": {
+      "sha512": "7j3M16emv9PAQN7VwFn23xLYNj8GJmwPOcogveHkaWnOCqiC+anRaNKQwqIBNApM1AuwZKivehTKTPmmrjUUnw==",
+      "type": "package",
+      "path": "docker.dotnet.enhanced.legacyhttp/4.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "docker.dotnet.enhanced.legacyhttp.4.3.3.nupkg.sha512",
+        "docker.dotnet.enhanced.legacyhttp.nuspec",
+        "icon.png",
+        "lib/net10.0/Docker.DotNet.LegacyHttp.dll",
+        "lib/net10.0/Docker.DotNet.LegacyHttp.xml",
+        "lib/net10.0/Microsoft.Net.Http.Client.dll",
+        "lib/net8.0/Docker.DotNet.LegacyHttp.dll",
+        "lib/net8.0/Docker.DotNet.LegacyHttp.xml",
+        "lib/net8.0/Microsoft.Net.Http.Client.dll",
+        "lib/net9.0/Docker.DotNet.LegacyHttp.dll",
+        "lib/net9.0/Docker.DotNet.LegacyHttp.xml",
+        "lib/net9.0/Microsoft.Net.Http.Client.dll",
+        "lib/netstandard2.0/Docker.DotNet.LegacyHttp.dll",
+        "lib/netstandard2.0/Docker.DotNet.LegacyHttp.xml",
+        "lib/netstandard2.0/Microsoft.Net.Http.Client.dll",
+        "lib/netstandard2.1/Docker.DotNet.LegacyHttp.dll",
+        "lib/netstandard2.1/Docker.DotNet.LegacyHttp.xml",
+        "lib/netstandard2.1/Microsoft.Net.Http.Client.dll"
+      ]
+    },
+    "Docker.DotNet.Enhanced.NativeHttp/4.3.3": {
+      "sha512": "iNzK+jRFeEMobSA7l/h4ARwCKOOefOWtVN5/RB0ft6/6H6IQXvVUuOgGyZAjYLBT7TsyClRYno2B904f3dtBuQ==",
+      "type": "package",
+      "path": "docker.dotnet.enhanced.nativehttp/4.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "docker.dotnet.enhanced.nativehttp.4.3.3.nupkg.sha512",
+        "docker.dotnet.enhanced.nativehttp.nuspec",
+        "icon.png",
+        "lib/net10.0/Docker.DotNet.NativeHttp.dll",
+        "lib/net10.0/Docker.DotNet.NativeHttp.xml",
+        "lib/net8.0/Docker.DotNet.NativeHttp.dll",
+        "lib/net8.0/Docker.DotNet.NativeHttp.xml",
+        "lib/net9.0/Docker.DotNet.NativeHttp.dll",
+        "lib/net9.0/Docker.DotNet.NativeHttp.xml",
+        "lib/netstandard2.0/Docker.DotNet.NativeHttp.dll",
+        "lib/netstandard2.0/Docker.DotNet.NativeHttp.xml",
+        "lib/netstandard2.1/Docker.DotNet.NativeHttp.dll",
+        "lib/netstandard2.1/Docker.DotNet.NativeHttp.xml"
+      ]
+    },
+    "Docker.DotNet.Enhanced.NPipe/4.3.3": {
+      "sha512": "ZTLYufuEfY0e6qLOgeH9QgXx2KYuoABRVaY5A8rsggyLgYqbDj9rCRfVAhHPCUv83S7pVxDHy+Tvm/BnxjWVpg==",
+      "type": "package",
+      "path": "docker.dotnet.enhanced.npipe/4.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "docker.dotnet.enhanced.npipe.4.3.3.nupkg.sha512",
+        "docker.dotnet.enhanced.npipe.nuspec",
+        "icon.png",
+        "lib/net10.0/Docker.DotNet.NPipe.dll",
+        "lib/net10.0/Docker.DotNet.NPipe.xml",
+        "lib/net10.0/Microsoft.Net.Http.Client.dll",
+        "lib/net8.0/Docker.DotNet.NPipe.dll",
+        "lib/net8.0/Docker.DotNet.NPipe.xml",
+        "lib/net8.0/Microsoft.Net.Http.Client.dll",
+        "lib/net9.0/Docker.DotNet.NPipe.dll",
+        "lib/net9.0/Docker.DotNet.NPipe.xml",
+        "lib/net9.0/Microsoft.Net.Http.Client.dll",
+        "lib/netstandard2.0/Docker.DotNet.NPipe.dll",
+        "lib/netstandard2.0/Docker.DotNet.NPipe.xml",
+        "lib/netstandard2.0/Microsoft.Net.Http.Client.dll",
+        "lib/netstandard2.1/Docker.DotNet.NPipe.dll",
+        "lib/netstandard2.1/Docker.DotNet.NPipe.xml",
+        "lib/netstandard2.1/Microsoft.Net.Http.Client.dll"
+      ]
+    },
+    "Docker.DotNet.Enhanced.Unix/4.3.3": {
+      "sha512": "ypo8qNbmvHw1t9VfpRTMogCw2vht6VjkXzlGYUUeP2H2bf83USURdla1maW1njn2oq2rfLUFOGMfmt+A37QU2w==",
+      "type": "package",
+      "path": "docker.dotnet.enhanced.unix/4.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "docker.dotnet.enhanced.unix.4.3.3.nupkg.sha512",
+        "docker.dotnet.enhanced.unix.nuspec",
+        "icon.png",
+        "lib/net10.0/Docker.DotNet.Unix.dll",
+        "lib/net10.0/Docker.DotNet.Unix.xml",
+        "lib/net10.0/Microsoft.Net.Http.Client.dll",
+        "lib/net8.0/Docker.DotNet.Unix.dll",
+        "lib/net8.0/Docker.DotNet.Unix.xml",
+        "lib/net8.0/Microsoft.Net.Http.Client.dll",
+        "lib/net9.0/Docker.DotNet.Unix.dll",
+        "lib/net9.0/Docker.DotNet.Unix.xml",
+        "lib/net9.0/Microsoft.Net.Http.Client.dll",
+        "lib/netstandard2.0/Docker.DotNet.Unix.dll",
+        "lib/netstandard2.0/Docker.DotNet.Unix.xml",
+        "lib/netstandard2.0/Microsoft.Net.Http.Client.dll",
+        "lib/netstandard2.1/Docker.DotNet.Unix.dll",
+        "lib/netstandard2.1/Docker.DotNet.Unix.xml",
+        "lib/netstandard2.1/Microsoft.Net.Http.Client.dll"
+      ]
+    },
+    "Docker.DotNet.Enhanced.X509/4.3.3": {
+      "sha512": "oBDibWezEv4hgj3RIQxI3DVcxkNV1MdrD0d/jhjUu+h3DL+qc0wlkQva15kkwMatXmC/hWp1VP0DMoFXe+BmEw==",
+      "type": "package",
+      "path": "docker.dotnet.enhanced.x509/4.3.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "docker.dotnet.enhanced.x509.4.3.3.nupkg.sha512",
+        "docker.dotnet.enhanced.x509.nuspec",
+        "icon.png",
+        "lib/net10.0/Docker.DotNet.X509.dll",
+        "lib/net10.0/Docker.DotNet.X509.xml",
+        "lib/net10.0/Microsoft.Net.Http.Client.dll",
+        "lib/net8.0/Docker.DotNet.X509.dll",
+        "lib/net8.0/Docker.DotNet.X509.xml",
+        "lib/net8.0/Microsoft.Net.Http.Client.dll",
+        "lib/net9.0/Docker.DotNet.X509.dll",
+        "lib/net9.0/Docker.DotNet.X509.xml",
+        "lib/net9.0/Microsoft.Net.Http.Client.dll",
+        "lib/netstandard2.0/Docker.DotNet.X509.dll",
+        "lib/netstandard2.0/Docker.DotNet.X509.xml",
+        "lib/netstandard2.0/Microsoft.Net.Http.Client.dll",
+        "lib/netstandard2.1/Docker.DotNet.X509.dll",
+        "lib/netstandard2.1/Docker.DotNet.X509.xml",
+        "lib/netstandard2.1/Microsoft.Net.Http.Client.dll"
       ]
     },
     "Microsoft.CodeCoverage/17.14.1": {
@@ -1088,6 +1493,98 @@
         "postgresql.png"
       ]
     },
+    "SharpZipLib/1.4.2": {
+      "sha512": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A==",
+      "type": "package",
+      "path": "sharpziplib/1.4.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "images/sharpziplib-nuget-256x256.png",
+        "lib/net6.0/ICSharpCode.SharpZipLib.dll",
+        "lib/net6.0/ICSharpCode.SharpZipLib.pdb",
+        "lib/net6.0/ICSharpCode.SharpZipLib.xml",
+        "lib/netstandard2.0/ICSharpCode.SharpZipLib.dll",
+        "lib/netstandard2.0/ICSharpCode.SharpZipLib.pdb",
+        "lib/netstandard2.0/ICSharpCode.SharpZipLib.xml",
+        "lib/netstandard2.1/ICSharpCode.SharpZipLib.dll",
+        "lib/netstandard2.1/ICSharpCode.SharpZipLib.pdb",
+        "lib/netstandard2.1/ICSharpCode.SharpZipLib.xml",
+        "sharpziplib.1.4.2.nupkg.sha512",
+        "sharpziplib.nuspec"
+      ]
+    },
+    "SSH.NET/2025.1.0": {
+      "sha512": "jrnbtf0ItVaXAe6jE8X/kSLa6uC+0C+7W1vepcnRQB/rD88qy4IxG7Lf1FIbWmkoc4iVXv0pKrz+Wc6J4ngmHw==",
+      "type": "package",
+      "path": "ssh.net/2025.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "SS-NET-icon-h500.png",
+        "lib/net462/Renci.SshNet.dll",
+        "lib/net462/Renci.SshNet.xml",
+        "lib/net8.0/Renci.SshNet.dll",
+        "lib/net8.0/Renci.SshNet.xml",
+        "lib/net9.0/Renci.SshNet.dll",
+        "lib/net9.0/Renci.SshNet.xml",
+        "lib/netstandard2.0/Renci.SshNet.dll",
+        "lib/netstandard2.0/Renci.SshNet.xml",
+        "ssh.net.2025.1.0.nupkg.sha512",
+        "ssh.net.nuspec"
+      ]
+    },
+    "Testcontainers/4.13.0": {
+      "sha512": "j8vi9jPBNSwaraGGx8w+2gtZyWrlbKxdhiGMS3nektg+KiwjFWx9ghCjs57EoQfvI+IAbzti0oQJupQChwgMog==",
+      "type": "package",
+      "path": "testcontainers/4.13.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "docs/banner.png",
+        "docs/logo.png",
+        "lib/net10.0/Testcontainers.dll",
+        "lib/net10.0/Testcontainers.xml",
+        "lib/net8.0/Testcontainers.dll",
+        "lib/net8.0/Testcontainers.xml",
+        "lib/net9.0/Testcontainers.dll",
+        "lib/net9.0/Testcontainers.xml",
+        "lib/netstandard2.0/Testcontainers.dll",
+        "lib/netstandard2.0/Testcontainers.xml",
+        "lib/netstandard2.1/Testcontainers.dll",
+        "lib/netstandard2.1/Testcontainers.xml",
+        "testcontainers.4.13.0.nupkg.sha512",
+        "testcontainers.nuspec"
+      ]
+    },
+    "Testcontainers.PostgreSql/4.13.0": {
+      "sha512": "2ow4AE8drI9iA9Fr4ycAPusXPB1lJfQyyNONSMLE/XqLpm8VuNAh3pK38fOjkOWtTrnD03s4hAIdl4036Ik69A==",
+      "type": "package",
+      "path": "testcontainers.postgresql/4.13.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README.md",
+        "docs/banner.png",
+        "docs/logo.png",
+        "lib/net10.0/Testcontainers.PostgreSql.dll",
+        "lib/net10.0/Testcontainers.PostgreSql.xml",
+        "lib/net8.0/Testcontainers.PostgreSql.dll",
+        "lib/net8.0/Testcontainers.PostgreSql.xml",
+        "lib/net9.0/Testcontainers.PostgreSql.dll",
+        "lib/net9.0/Testcontainers.PostgreSql.xml",
+        "lib/netstandard2.0/Testcontainers.PostgreSql.dll",
+        "lib/netstandard2.0/Testcontainers.PostgreSql.xml",
+        "lib/netstandard2.1/Testcontainers.PostgreSql.dll",
+        "lib/netstandard2.1/Testcontainers.PostgreSql.xml",
+        "testcontainers.postgresql.4.13.0.nupkg.sha512",
+        "testcontainers.postgresql.nuspec"
+      ]
+    },
     "xunit/2.9.3": {
       "sha512": "TlXQBinK35LpOPKHAqbLY4xlEen9TBafjs0V5KnA4wZsoQLQJiirCR4CbIXvOH8NzkW4YeJKP5P/Bnrodm0h9Q==",
       "type": "package",
@@ -1236,8 +1733,10 @@
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "Dapper >= 2.1.79",
       "Microsoft.NET.Test.Sdk >= 17.14.1",
       "MroBackend >= 1.0.0",
+      "Testcontainers.PostgreSql >= 4.13.0",
       "coverlet.collector >= 6.0.4",
       "xunit >= 2.9.3",
       "xunit.runner.visualstudio >= 3.1.4"
@@ -1292,9 +1791,17 @@
         "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
+          "Dapper": {
+            "target": "Package",
+            "version": "[2.1.79, )"
+          },
           "Microsoft.NET.Test.Sdk": {
             "target": "Package",
             "version": "[17.14.1, )"
+          },
+          "Testcontainers.PostgreSql": {
+            "target": "Package",
+            "version": "[4.13.0, )"
           },
           "coverlet.collector": {
             "target": "Package",
