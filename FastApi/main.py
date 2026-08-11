@@ -18,6 +18,9 @@ class StockRequest(BaseModel):
     avg_daily_usage: float
     usage_trend_pct: float
 
+def is_delayed(predicted_lead_time: float, promised_delivery_days: float) -> bool:
+    return predicted_lead_time - promised_delivery_days >= 1
+
 @app.post("/predict/stock")
 def stock_prediction(request:StockRequest):
 
@@ -51,8 +54,8 @@ def leadtime_prediction(request:LeadtimeRequest):
         
     prediction = float(model2.predict(row.values)[0])
     
-    return { 
-        "lead_time": prediction,
-        "promised_delivery_days": request.promised_delivery_days,
-        "delay_warning" : prediction - request.promised_delivery_days >= 1 
-        }
+    return {
+    "lead_time": prediction,
+    "promised_delivery_days": request.promised_delivery_days,
+    "delay_warning": is_delayed(prediction, request.promised_delivery_days)
+    }
