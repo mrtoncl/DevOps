@@ -89,3 +89,75 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: Frontend
+
+  backend-image:
+    needs: backend
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./Backend
+          push: true
+          tags: |
+            ghcr.io/mrtoncl/devops-backend:latest
+            ghcr.io/mrtoncl/devops-backend:${{ github.sha }}
+
+  fastapi-image:
+    needs: fastapi
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./FastApi
+          push: true
+          tags: |
+            ghcr.io/mrtoncl/devops-fastapi:latest
+            ghcr.io/mrtoncl/devops-fastapi:${{ github.sha }}
+
+  frontend-image:
+    needs: frontend
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./Frontend
+          push: true
+          tags: |
+            ghcr.io/mrtoncl/devops-frontend:latest
+            ghcr.io/mrtoncl/devops-frontend:${{ github.sha }}
