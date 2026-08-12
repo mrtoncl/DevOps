@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [devops]
+  pull_request:
+    branches: [devops]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Build
+        run: dotnet build
+        working-directory: Backend
+
+      - name: Test
+        run: dotnet test
+        working-directory: Backend.Tests
+
+  fastapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Bağımlılıkları kur
+        run: pip install -r requirements-dev.txt
+        working-directory: FastApi
+
+      - name: Test
+        run: pytest -v
+        working-directory: FastApi
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Bağımlılıkları kur
+        run: npm ci
+        working-directory: Frontend
+
+      - name: Test
+        run: npm test
+        working-directory: Frontend
+
+      - name: Build
+        run: npm run build
+        working-directory: Frontend
