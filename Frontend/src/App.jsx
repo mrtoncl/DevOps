@@ -83,8 +83,6 @@ function App() {
   });
 }
 
-  const criticalCount = allParts.filter((p) => p.status === 'Critical').length;
-
   if (!currentUser) {
     return <AuthScreen onLoginSuccess={setCurrentUser} />;
   }

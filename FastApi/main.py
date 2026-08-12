@@ -1,8 +1,8 @@
+import joblib
+import numpy as np
+import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel
-import joblib
-import pandas as pd
-import numpy as np
 
 app = FastAPI()
 
@@ -11,6 +11,7 @@ model2 = joblib.load("models/model2_gbm.joblib")
 model1_columns = joblib.load("models/model1_columns.joblib")
 model2_columns = joblib.load("models/model2_columns.joblib")
 
+
 class StockRequest(BaseModel):
     category: str
     criticality: str
@@ -18,16 +19,18 @@ class StockRequest(BaseModel):
     avg_daily_usage: float
     usage_trend_pct: float
 
+
 def is_delayed(predicted_lead_time: float, promised_delivery_days: float) -> bool:
     return predicted_lead_time - promised_delivery_days >= 1
 
+
 @app.post("/predict/stock")
-def stock_prediction(request:StockRequest):
+def stock_prediction(request: StockRequest):
 
     row = pd.DataFrame([request.model_dump()])
 
     row = pd.get_dummies(row).reindex(columns=model1_columns, fill_value=0)
-    
+
     predictions = np.array([tree.predict(row.values)[0] for tree in model1.estimators_])
 
     return {
@@ -45,17 +48,18 @@ class LeadtimeRequest(BaseModel):
     supplier_reliability_score: float
     promised_delivery_days: float
 
+
 @app.post("/predict/leadtime")
-def leadtime_prediction(request:LeadtimeRequest):
-    
+def leadtime_prediction(request: LeadtimeRequest):
+
     row = pd.DataFrame([request.model_dump()])
 
     row = pd.get_dummies(row).reindex(columns=model2_columns, fill_value=0)
-        
+
     prediction = float(model2.predict(row.values)[0])
-    
+
     return {
-    "lead_time": prediction,
-    "promised_delivery_days": request.promised_delivery_days,
-    "delay_warning": is_delayed(prediction, request.promised_delivery_days)
+        "lead_time": prediction,
+        "promised_delivery_days": request.promised_delivery_days,
+        "delay_warning": is_delayed(prediction, request.promised_delivery_days),
     }

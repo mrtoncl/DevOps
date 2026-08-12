@@ -143,3 +143,6 @@ Pods/
 /enterprise/register/Gemfile.lock
 
 .env
+node_modules/
+dist/
+.vite/

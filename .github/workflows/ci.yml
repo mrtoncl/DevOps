@@ -24,6 +24,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      - name: Format kontrolü
+	run: dotnet format --verify-no-changes
+	working-directory: Backend
+
       - name: Build
         run: dotnet build
         working-directory: Backend
@@ -47,6 +51,10 @@ jobs:
         run: pip install -r requirements-dev.txt
         working-directory: FastApi
 
+      - name: Lint
+	run: ruff check .
+	working-directory: FastApi
+
       - name: Test
         run: pytest -v
         working-directory: FastApi
@@ -69,6 +77,10 @@ jobs:
       - name: Bağımlılıkları kur
         run: npm ci
         working-directory: Frontend
+
+      - name: Lint
+	run: nmp run lint
+	working-directory: Frontend
 
       - name: Test
         run: npm test

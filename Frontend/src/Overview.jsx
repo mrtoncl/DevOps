@@ -1,4 +1,4 @@
-import { TkCard, TkBadge, TkButton, TkChart } from '@takeoff-ui/react';
+import { TkCard, TkBadge, TkChart } from '@takeoff-ui/react';
 import { statusVariant } from './statusUtils';
 
 // Chart.js doesn't know about our CSS theme variables (it paints on a canvas), so without this its

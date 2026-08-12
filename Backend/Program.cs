@@ -315,16 +315,16 @@ class UserRecord
 }
 
 record OrderRequest(
-    string ProductId, 
-    int OrderedBy, 
-    double PredictedStockoutDay, 
+    string ProductId,
+    int OrderedBy,
+    double PredictedStockoutDay,
     double PredictedLeadTimeDays
 );
 
 record RegisterRequest(
-    string Username, 
-    string Password, 
-    string FullName, 
+    string Username,
+    string Password,
+    string FullName,
     string RoleName
 );
 
@@ -337,7 +337,7 @@ class UserListItem
 }
 
 record ChangeRoleRequest(
-    int ActingUserId, 
+    int ActingUserId,
     string NewRoleName
 );
 
@@ -352,8 +352,8 @@ class OrderHistoryItem
 }
 
 record ChangePasswordRequest(
-    string Username, 
-    string OldPassword, 
+    string Username,
+    string OldPassword,
     string NewPassword
 );
 
