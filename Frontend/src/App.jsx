@@ -9,7 +9,7 @@ import OrderHistory from './OrderHistory';
 import ChangePassword from './ChangePassword';
 import PartDrawer from './PartDrawer';
 
-const API_BASE = 'http://localhost:5005';
+const API_BASE = 'http://localhost:8080';
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview');

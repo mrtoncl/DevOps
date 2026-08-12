@@ -161,3 +161,44 @@ jobs:
           tags: |
             ghcr.io/mrtoncl/devops-frontend:latest
             ghcr.io/mrtoncl/devops-frontend:${{ github.sha }}
+  e2e:
+    needs: [backend, fastapi, frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stack'i ayağa kaldır
+        run: docker compose up --build -d
+
+      - name: Servislerin hazır olmasını bekle
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:8080 && curl -sf http://localhost:3000 && break
+            echo "Bekleniyor... ($i)"
+            sleep 3
+          done
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Playwright'ı kur
+        run: npm ci && npx playwright install --with-deps
+        working-directory: Frontend
+
+      - name: E2E testlerini çalıştır
+        run: npx playwright test
+        working-directory: Frontend
+
+      - name: Test raporunu sakla (başarısız olursa da)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: Frontend/playwright-report/
+
+      - name: Stack'i kapat
+        if: always()
+        run: docker compose down          
