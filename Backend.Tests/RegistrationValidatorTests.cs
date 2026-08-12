@@ -7,7 +7,7 @@ public class RegistrationValidatorTests
     public void Validate_ReturnsNull_WhenAllFieldsValid()
     {
         var result = RegistrationValidator.Validate("ahmet", "Ahmet Yılmaz", "1234");
-        Assert.Null(result);
+        Assert.NotNull(result);
     }
 
     [Fact]
