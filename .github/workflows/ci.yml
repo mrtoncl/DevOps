@@ -25,8 +25,8 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Format kontrolü
-	run: dotnet format --verify-no-changes
-	working-directory: Backend
+        run: dotnet format --verify-no-changes
+        working-directory: Backend
 
       - name: Build
         run: dotnet build
@@ -52,8 +52,8 @@ jobs:
         working-directory: FastApi
 
       - name: Lint
-	run: ruff check .
-	working-directory: FastApi
+        run: ruff check .
+        working-directory: FastApi
 
       - name: Test
         run: pytest -v
@@ -79,8 +79,8 @@ jobs:
         working-directory: Frontend
 
       - name: Lint
-	run: nmp run lint
-	working-directory: Frontend
+        run: npm run lint
+        working-directory: Frontend
 
       - name: Test
         run: npm test
