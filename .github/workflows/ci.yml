@@ -16,6 +16,14 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      - name: NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Build
         run: dotnet build
         working-directory: Backend
@@ -32,6 +40,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: FastApi/requirements-dev.txt
 
       - name: Bağımlılıkları kur
         run: pip install -r requirements-dev.txt
@@ -43,12 +53,17 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
 
       - name: Bağımlılıkları kur
         run: npm ci
