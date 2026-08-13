@@ -146,3 +146,4 @@ Pods/
 node_modules/
 dist/
 .vite/
+Nginx/certs/

@@ -176,13 +176,21 @@ jobs:
           FASTAPI_URL=http://fastapi:8000
           EOF
 
+      - name: Self-signed sertifika oluştur (CI'a özel)
+        run: |
+          mkdir -p Nginx/certs
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout Nginx/certs/selfsigned.key \
+            -out Nginx/certs/selfsigned.crt \
+            -subj "/CN=localhost"
+
       - name: Stack'i ayağa kaldır
         run: docker compose up --build -d
 
       - name: Servislerin hazır olmasını bekle
         run: |
           for i in $(seq 1 30); do
-            curl -sf http://localhost && curl -sf http://localhost/api/parts && break
+            curl -skf https://localhost && curl -skf https://localhost/api/parts && break
             echo "Bekleniyor... ($i)"
             sleep 3
           done
