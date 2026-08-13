@@ -182,7 +182,7 @@ jobs:
       - name: Servislerin hazır olmasını bekle
         run: |
           for i in $(seq 1 30); do
-            curl -sf http://localhost:8080 && curl -sf http://localhost:3000 && break
+            curl -sf http://localhost && curl -sf http://localhost/api/parts && break
             echo "Bekleniyor... ($i)"
             sleep 3
           done

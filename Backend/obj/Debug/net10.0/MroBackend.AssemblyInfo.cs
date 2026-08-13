@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MroBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a5b63ab83c6c7aa971794598db4b54a0c32ff849")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9710cda15e3efae0b1b599cfdb4f0e939b40e341")]
 [assembly: System.Reflection.AssemblyProductAttribute("MroBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MroBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const API_BASE = 'http://localhost:8080';
+const API_BASE = '';
 
 const inputStyle = {
   width: '100%',
