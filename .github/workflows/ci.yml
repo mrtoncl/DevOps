@@ -193,6 +193,10 @@ jobs:
             curl -skf https://localhost && curl -skf https://localhost/api/parts && break
             echo "Bekleniyor... ($i)"
             sleep 3
+	    if [ "$i" -eq 30 ]; then
+              echo "Smoke test başarısız: servisler 90 saniye içinde hazır olmadı."
+              exit 1
+            fi
           done
 
       - uses: actions/setup-node@v4
