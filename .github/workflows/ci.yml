@@ -187,13 +187,13 @@ jobs:
       - name: Stack'i ayağa kaldır
         run: docker compose up --build -d
 
-      - name: Servislerin hazır olmasını bekle
+      - name: Deploy sonrası smoke test
         run: |
           for i in $(seq 1 30); do
             curl -skf https://localhost && curl -skf https://localhost/api/parts && break
             echo "Bekleniyor... ($i)"
             sleep 3
-	    if [ "$i" -eq 30 ]; then
+            if [ "$i" -eq 30 ]; then
               echo "Smoke test başarısız: servisler 90 saniye içinde hazır olmadı."
               exit 1
             fi
