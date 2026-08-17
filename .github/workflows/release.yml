@@ -60,7 +60,7 @@ jobs:
           tags: ghcr.io/mrtoncl/devops-backend:${{ github.ref_name }}
 
       - name: Trivy güvenlik taraması
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           image-ref: ghcr.io/mrtoncl/devops-backend:${{ github.ref_name }}
           severity: CRITICAL
@@ -93,7 +93,7 @@ jobs:
           tags: ghcr.io/mrtoncl/devops-fastapi:${{ github.ref_name }}
 
       - name: Trivy güvenlik taraması
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           image-ref: ghcr.io/mrtoncl/devops-fastapi:${{ github.ref_name }}
           severity: CRITICAL
@@ -126,7 +126,7 @@ jobs:
           tags: ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
 
       - name: Trivy güvenlik taraması
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           image-ref: ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
           severity: CRITICAL
