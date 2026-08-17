@@ -51,11 +51,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v5
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
         with:
           context: ./Backend
-          push: true
+          push: false
+          load: true
           tags: ghcr.io/mrtoncl/devops-backend:${{ github.ref_name }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-backend:${{ github.ref_name }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: docker push ghcr.io/mrtoncl/devops-backend:${{ github.ref_name }}
 
   fastapi-release-image:
     runs-on: ubuntu-latest
@@ -71,11 +84,24 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v5
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
         with:
           context: ./FastApi
-          push: true
+          push: false
+          load: true
           tags: ghcr.io/mrtoncl/devops-fastapi:${{ github.ref_name }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-fastapi:${{ github.ref_name }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: docker push ghcr.io/mrtoncl/devops-fastapi:${{ github.ref_name }}
 
   frontend-release-image:
     runs-on: ubuntu-latest
@@ -91,8 +117,21 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v5
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
         with:
           context: ./Frontend
-          push: true
+          push: false
+          load: true
           tags: ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: docker push ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
