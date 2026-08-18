@@ -1,0 +1,116 @@
+apiVersion: v1
+data:
+  01-init.sql: "--\n-- PostgreSQL database dump\n--\n\n\\restrict dGbt51bgzU7U9RYYtUqHED5eLgKDjtF5bRUAsUBbt0gKv4kjTWFnShvujhwDmqG\n\n--
+    Dumped from database version 18.4 (Postgres.app)\n-- Dumped by pg_dump version
+    18.4\n\n-- Started on 2026-07-28 10:19:28 +03\n\nSET statement_timeout = 0;\nSET
+    lock_timeout = 0;\nSET idle_in_transaction_session_timeout = 0;\nSET transaction_timeout
+    = 0;\nSET client_encoding = 'UTF8';\nSET standard_conforming_strings = on;\nSELECT
+    pg_catalog.set_config('search_path', '', false);\nSET check_function_bodies =
+    false;\nSET xmloption = content;\nSET client_min_messages = warning;\nSET row_security
+    = off;\n\nSET default_tablespace = '';\n\nSET default_table_access_method = heap;\n\n--\n--
+    TOC entry 220 (class 1259 OID 16391)\n-- Name: deneme; Type: TABLE; Schema: public;
+    Owner: postgres\n--\n\nCREATE TABLE public.deneme (\n    id integer NOT NULL,\n
+    \   mesaj text\n);\n\n\nALTER TABLE public.deneme OWNER TO postgres;\n\n--\n--
+    TOC entry 219 (class 1259 OID 16390)\n-- Name: deneme_id_seq; Type: SEQUENCE;
+    Schema: public; Owner: postgres\n--\n\nCREATE SEQUENCE public.deneme_id_seq\n
+    \   AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO
+    MAXVALUE\n    CACHE 1;\n\n\nALTER SEQUENCE public.deneme_id_seq OWNER TO postgres;\n\n--\n--
+    TOC entry 3862 (class 0 OID 0)\n-- Dependencies: 219\n-- Name: deneme_id_seq;
+    Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres\n--\n\nALTER SEQUENCE
+    public.deneme_id_seq OWNED BY public.deneme.id;\n\n\n--\n-- TOC entry 226 (class
+    1259 OID 16433)\n-- Name: orders; Type: TABLE; Schema: public; Owner: postgres\n--\n\nCREATE
+    TABLE public.orders (\n    id integer NOT NULL,\n    product_id text NOT NULL,\n
+    \   ordered_by integer,\n    ordered_at timestamp without time zone DEFAULT now()
+    NOT NULL,\n    predicted_stockout_day numeric,\n    predicted_lead_time_days numeric\n);\n\n\nALTER
+    TABLE public.orders OWNER TO postgres;\n\n--\n-- TOC entry 225 (class 1259 OID
+    16432)\n-- Name: orders_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres\n--\n\nCREATE
+    SEQUENCE public.orders_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT
+    BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;\n\n\nALTER SEQUENCE public.orders_id_seq
+    OWNER TO postgres;\n\n--\n-- TOC entry 3863 (class 0 OID 0)\n-- Dependencies:
+    225\n-- Name: orders_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres\n--\n\nALTER
+    SEQUENCE public.orders_id_seq OWNED BY public.orders.id;\n\n\n--\n-- TOC entry
+    222 (class 1259 OID 16402)\n-- Name: roles; Type: TABLE; Schema: public; Owner:
+    postgres\n--\n\nCREATE TABLE public.roles (\n    id integer NOT NULL,\n    name
+    text NOT NULL\n);\n\n\nALTER TABLE public.roles OWNER TO postgres;\n\n--\n-- TOC
+    entry 221 (class 1259 OID 16401)\n-- Name: roles_id_seq; Type: SEQUENCE; Schema:
+    public; Owner: postgres\n--\n\nCREATE SEQUENCE public.roles_id_seq\n    AS integer\n
+    \   START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE
+    1;\n\n\nALTER SEQUENCE public.roles_id_seq OWNER TO postgres;\n\n--\n-- TOC entry
+    3864 (class 0 OID 0)\n-- Dependencies: 221\n-- Name: roles_id_seq; Type: SEQUENCE
+    OWNED BY; Schema: public; Owner: postgres\n--\n\nALTER SEQUENCE public.roles_id_seq
+    OWNED BY public.roles.id;\n\n\n--\n-- TOC entry 224 (class 1259 OID 16413)\n--
+    Name: users; Type: TABLE; Schema: public; Owner: postgres\n--\n\nCREATE TABLE
+    public.users (\n    id integer NOT NULL,\n    username text NOT NULL,\n    password_hash
+    text NOT NULL,\n    full_name text NOT NULL,\n    role_id integer\n);\n\n\nALTER
+    TABLE public.users OWNER TO postgres;\n\n--\n-- TOC entry 223 (class 1259 OID
+    16412)\n-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres\n--\n\nCREATE
+    SEQUENCE public.users_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT
+    BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;\n\n\nALTER SEQUENCE public.users_id_seq
+    OWNER TO postgres;\n\n--\n-- TOC entry 3865 (class 0 OID 0)\n-- Dependencies:
+    223\n-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres\n--\n\nALTER
+    SEQUENCE public.users_id_seq OWNED BY public.users.id;\n\n\n--\n-- TOC entry 3685
+    (class 2604 OID 16394)\n-- Name: deneme id; Type: DEFAULT; Schema: public; Owner:
+    postgres\n--\n\nALTER TABLE ONLY public.deneme ALTER COLUMN id SET DEFAULT nextval('public.deneme_id_seq'::regclass);\n\n\n--\n--
+    TOC entry 3688 (class 2604 OID 16436)\n-- Name: orders id; Type: DEFAULT; Schema:
+    public; Owner: postgres\n--\n\nALTER TABLE ONLY public.orders ALTER COLUMN id
+    SET DEFAULT nextval('public.orders_id_seq'::regclass);\n\n\n--\n-- TOC entry 3686
+    (class 2604 OID 16405)\n-- Name: roles id; Type: DEFAULT; Schema: public; Owner:
+    postgres\n--\n\nALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_id_seq'::regclass);\n\n\n--\n--
+    TOC entry 3687 (class 2604 OID 16416)\n-- Name: users id; Type: DEFAULT; Schema:
+    public; Owner: postgres\n--\n\nALTER TABLE ONLY public.users ALTER COLUMN id SET
+    DEFAULT nextval('public.users_id_seq'::regclass);\n\n\n--\n-- TOC entry 3850 (class
+    0 OID 16391)\n-- Dependencies: 220\n-- Data for Name: deneme; Type: TABLE DATA;
+    Schema: public; Owner: postgres\n--\n\nCOPY public.deneme (id, mesaj) FROM stdin;\n1\tmerhaba
+    postgres\n\\.\n\n\n--\n-- TOC entry 3856 (class 0 OID 16433)\n-- Dependencies:
+    226\n-- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres\n--\n\nCOPY
+    public.orders (id, product_id, ordered_by, ordered_at, predicted_stockout_day,
+    predicted_lead_time_days) FROM stdin;\n1\tTHY-0061\t12\t2026-07-28 10:12:20.156553\t34\t66.0743038085861\n2\tTHY-0012\t12\t2026-07-28
+    10:12:23.271034\t25\t56.2366953654598\n3\tTHY-0019\t12\t2026-07-28 10:12:27.355631\t21\t38.5624392370524\n4\tTHY-0045\t12\t2026-07-28
+    10:12:30.921615\t18\t34.196497621661\n5\tTHY-0032\t12\t2026-07-28 10:12:33.823\t9\t22.2216211264919\n6\tTHY-0041\t12\t2026-07-28
+    10:12:38.571843\t11\t8.09886654859142\n7\tTHY-0050\t12\t2026-07-28 10:12:41.640574\t9\t3.12976321921712\n8\tTHY-0022\t12\t2026-07-28
+    10:12:44.704823\t12\t4.0779183305421\n9\tTHY-0053\t12\t2026-07-28 10:12:47.789586\t12\t4.00350609549505\n10\tTHY-0024\t12\t2026-07-28
+    10:12:50.92199\t18\t8.61162718743832\n11\tTHY-0055\t13\t2026-07-28 10:13:59.440358\t23\t2.15804264934245\n12\tTHY-0056\t13\t2026-07-28
+    10:14:02.288583\t44\t6.99318797523828\n\\.\n\n\n--\n-- TOC entry 3852 (class 0
+    OID 16402)\n-- Dependencies: 222\n-- Data for Name: roles; Type: TABLE DATA; Schema:
+    public; Owner: postgres\n--\n\nCOPY public.roles (id, name) FROM stdin;\n1\tAdmin\n2\tUser\n16\tTest
+    Rol\n17\tTest Rol\n18\tTest Rol\n19\tTest Rol\n20\tTest Rol\n21\tTest Rol\n22\tTest
+    Rol\n\\.\n\n\n--\n-- TOC entry 3854 (class 0 OID 16413)\n-- Dependencies: 224\n--
+    Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres\n--\n\nCOPY
+    public.users (id, username, password_hash, full_name, role_id) FROM stdin;\n12\tmurat\t$2a$11$FFDuZl7.G64C.bLABsbuauP2fjgV6axX5E5mLxWkzzR2VU9Qhgh8G\tMurat
+    Emir Öncül\t1\n13\tyakup\t$2a$11$WH3eV.sobNoFCaqY4xJfAOwkb92Hls41671VNbCxaw0AYhk.B29FC\tYakup
+    Özdemir\t2\n\\.\n\n\n--\n-- TOC entry 3866 (class 0 OID 0)\n-- Dependencies: 219\n--
+    Name: deneme_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres\n--\n\nSELECT
+    pg_catalog.setval('public.deneme_id_seq', 1, true);\n\n\n--\n-- TOC entry 3867
+    (class 0 OID 0)\n-- Dependencies: 225\n-- Name: orders_id_seq; Type: SEQUENCE
+    SET; Schema: public; Owner: postgres\n--\n\nSELECT pg_catalog.setval('public.orders_id_seq',
+    12, true);\n\n\n--\n-- TOC entry 3868 (class 0 OID 0)\n-- Dependencies: 221\n--
+    Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres\n--\n\nSELECT
+    pg_catalog.setval('public.roles_id_seq', 22, true);\n\n\n--\n-- TOC entry 3869
+    (class 0 OID 0)\n-- Dependencies: 223\n-- Name: users_id_seq; Type: SEQUENCE SET;
+    Schema: public; Owner: postgres\n--\n\nSELECT pg_catalog.setval('public.users_id_seq',
+    13, true);\n\n\n--\n-- TOC entry 3691 (class 2606 OID 16399)\n-- Name: deneme
+    deneme_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres\n--\n\nALTER TABLE
+    ONLY public.deneme\n    ADD CONSTRAINT deneme_pkey PRIMARY KEY (id);\n\n\n--\n--
+    TOC entry 3699 (class 2606 OID 16444)\n-- Name: orders orders_pkey; Type: CONSTRAINT;
+    Schema: public; Owner: postgres\n--\n\nALTER TABLE ONLY public.orders\n    ADD
+    CONSTRAINT orders_pkey PRIMARY KEY (id);\n\n\n--\n-- TOC entry 3693 (class 2606
+    OID 16411)\n-- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner:
+    postgres\n--\n\nALTER TABLE ONLY public.roles\n    ADD CONSTRAINT roles_pkey PRIMARY
+    KEY (id);\n\n\n--\n-- TOC entry 3695 (class 2606 OID 16424)\n-- Name: users users_pkey;
+    Type: CONSTRAINT; Schema: public; Owner: postgres\n--\n\nALTER TABLE ONLY public.users\n
+    \   ADD CONSTRAINT users_pkey PRIMARY KEY (id);\n\n\n--\n-- TOC entry 3697 (class
+    2606 OID 16426)\n-- Name: users users_username_key; Type: CONSTRAINT; Schema:
+    public; Owner: postgres\n--\n\nALTER TABLE ONLY public.users\n    ADD CONSTRAINT
+    users_username_key UNIQUE (username);\n\n\n--\n-- TOC entry 3701 (class 2606 OID
+    16445)\n-- Name: orders orders_ordered_by_fkey; Type: FK CONSTRAINT; Schema: public;
+    Owner: postgres\n--\n\nALTER TABLE ONLY public.orders\n    ADD CONSTRAINT orders_ordered_by_fkey
+    FOREIGN KEY (ordered_by) REFERENCES public.users(id);\n\n\n--\n-- TOC entry 3700
+    (class 2606 OID 16427)\n-- Name: users users_role_id_fkey; Type: FK CONSTRAINT;
+    Schema: public; Owner: postgres\n--\n\nALTER TABLE ONLY public.users\n    ADD
+    CONSTRAINT users_role_id_fkey FOREIGN KEY (role_id) REFERENCES public.roles(id);\n\n\n--
+    Completed on 2026-07-28 10:19:30 +03\n\n--\n-- PostgreSQL database dump complete\n--\n\n\\unrestrict
+    dGbt51bgzU7U9RYYtUqHED5eLgKDjtF5bRUAsUBbt0gKv4kjTWFnShvujhwDmqG\n\n"
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: mro-pulse
