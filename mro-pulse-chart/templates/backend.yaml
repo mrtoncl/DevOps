@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
   labels:
-    app: backend
+    {{- include "mro-pulse.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.backend.replicaCount }}
   selector:
     matchLabels:
       app: backend
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: devops-backend:latest
+          image: "{{ .Values.backend.image }}:{{ .Values.backend.tag }}"
           imagePullPolicy: Never
           env:
             - name: DB_CONNECTION_STRING
@@ -44,20 +44,40 @@ spec:
             periodSeconds: 10
           resources:
             requests:
-              cpu: 150m
-              memory: 200Mi
+              cpu: {{ .Values.backend.resources.requests.cpu }}
+              memory: {{ .Values.backend.resources.requests.memory }}
             limits:
-              cpu: 500m
-              memory: 400Mi
+              cpu: {{ .Values.backend.resources.limits.cpu }}
+              memory: {{ .Values.backend.resources.limits.memory }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: backend
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     app: backend
   ports:
     - port: 8080
       targetPort: 8080
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend-hpa
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: {{ .Values.backend.hpa.minReplicas }}
+  maxReplicas: {{ .Values.backend.hpa.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.backend.hpa.targetCPUUtilization }}

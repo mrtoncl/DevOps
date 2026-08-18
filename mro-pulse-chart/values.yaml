@@ -1,0 +1,37 @@
+namespace: mro-pulse
+
+postgres:
+  image: postgres
+  tag: "18-alpine"
+  storage: 1Gi
+  resources:
+    requests: { cpu: 250m, memory: 256Mi }
+    limits: { cpu: 500m, memory: 512Mi }
+
+fastapi:
+  image: devops-fastapi
+  tag: latest
+  replicaCount: 1
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits: { cpu: 300m, memory: 256Mi }
+
+backend:
+  image: devops-backend
+  tag: latest
+  replicaCount: 1
+  resources:
+    requests: { cpu: 150m, memory: 200Mi }
+    limits: { cpu: 500m, memory: 400Mi }
+  hpa:
+    minReplicas: 1
+    maxReplicas: 4
+    targetCPUUtilization: 50
+
+frontend:
+  image: devops-frontend
+  tag: latest
+  replicaCount: 1
+  resources:
+    requests: { cpu: 50m, memory: 64Mi }
+    limits: { cpu: 200m, memory: 128Mi }

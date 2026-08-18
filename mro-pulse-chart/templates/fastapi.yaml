@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fastapi
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
   labels:
-    app: fastapi
+    {{- include "mro-pulse.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.fastapi.replicaCount }}
   selector:
     matchLabels:
       app: fastapi
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: fastapi
-          image: devops-fastapi:latest
+          image: "{{ .Values.fastapi.image }}:{{ .Values.fastapi.tag }}"
           imagePullPolicy: Never
           ports:
             - containerPort: 8000
@@ -33,17 +33,17 @@ spec:
             periodSeconds: 10
           resources:
             requests:
-              cpu: 100m
-              memory: 128Mi
+              cpu: {{ .Values.fastapi.resources.requests.cpu }}
+              memory: {{ .Values.fastapi.resources.requests.memory }}
             limits:
-              cpu: 300m
-              memory: 256Mi
+              cpu: {{ .Values.fastapi.resources.limits.cpu }}
+              memory: {{ .Values.fastapi.resources.limits.memory }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: fastapi
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     app: fastapi

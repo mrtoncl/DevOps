@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
   labels:
-    app: frontend
+    {{- include "mro-pulse.labels" . | nindent 4 }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.frontend.replicaCount }}
   selector:
     matchLabels:
       app: frontend
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: devops-frontend:latest
+          image: "{{ .Values.frontend.image }}:{{ .Values.frontend.tag }}"
           imagePullPolicy: Never
           ports:
             - containerPort: 80
@@ -33,17 +33,17 @@ spec:
             periodSeconds: 10
           resources:
             requests:
-              cpu: 50m
-              memory: 64Mi
+              cpu: {{ .Values.frontend.resources.requests.cpu }}
+              memory: {{ .Values.frontend.resources.requests.memory }}
             limits:
-              cpu: 200m
-              memory: 128Mi
+              cpu: {{ .Values.frontend.resources.limits.cpu }}
+              memory: {{ .Values.frontend.resources.limits.memory }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: frontend
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     app: frontend
