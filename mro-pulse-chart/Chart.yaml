@@ -1,0 +1,5 @@
+apiVersion: v2
+name: mro-pulse
+description: MRO-Pulse Kubernetes Helm chart'ı
+version: 0.1.0
+appVersion: "1.0"

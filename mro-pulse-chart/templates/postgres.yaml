@@ -1,22 +1,31 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: {{ .Values.namespace }}
+data:
+  01-init.sql: |-
+{{ .Files.Get "files/mro_database_dump" | indent 4 }}
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.postgres.storage }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
   labels:
-    app: postgres
+    {{- include "mro-pulse.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
@@ -29,7 +38,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:18-alpine
+          image: "{{ .Values.postgres.image }}:{{ .Values.postgres.tag }}"
           env:
             - name: POSTGRES_DB
               value: postgres
@@ -51,17 +60,16 @@ spec:
             timeoutSeconds: 5
           resources:
             requests:
-              cpu: 250m
-              memory: 256Mi
+              cpu: {{ .Values.postgres.resources.requests.cpu }}
+              memory: {{ .Values.postgres.resources.requests.memory }}
             limits:
-              cpu: 500m
-              memory: 512Mi
+              cpu: {{ .Values.postgres.resources.limits.cpu }}
+              memory: {{ .Values.postgres.resources.limits.memory }}
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql
             - name: postgres-init
               mountPath: /docker-entrypoint-initdb.d
-              
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
@@ -74,7 +82,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  namespace: mro-pulse
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     app: postgres

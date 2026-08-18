@@ -1,0 +1,4 @@
+backend:
+  replicaCount: 2
+  hpa:
+    maxReplicas: 3
