@@ -136,7 +136,7 @@ jobs:
       - name: Registry'ye push et
         run: docker push ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
 
-    nginx-release-image:
+  nginx-release-image:
     runs-on: ubuntu-latest
     permissions:
       contents: read
