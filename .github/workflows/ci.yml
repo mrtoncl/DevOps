@@ -203,6 +203,52 @@ jobs:
           docker push ghcr.io/mrtoncl/devops-frontend:${{ github.sha }}
           docker tag ghcr.io/mrtoncl/devops-frontend:${{ github.sha }} ghcr.io/mrtoncl/devops-frontend:latest
           docker push ghcr.io/mrtoncl/devops-frontend:latest
+
+    nginx-image:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Self-signed sertifika oluştur (build için gerekli)
+        run: |
+          mkdir -p Nginx/certs
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout Nginx/certs/selfsigned.key \
+            -out Nginx/certs/selfsigned.crt \
+            -subj "/CN=localhost"
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Nginx
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-nginx:${{ github.sha }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-nginx:${{ github.sha }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: |
+          docker push ghcr.io/mrtoncl/devops-nginx:${{ github.sha }}
+          docker tag ghcr.io/mrtoncl/devops-nginx:${{ github.sha }} ghcr.io/mrtoncl/devops-nginx:latest
+          docker push ghcr.io/mrtoncl/devops-nginx:latest
+
   e2e:
     needs: [backend, fastapi, frontend]
     runs-on: ubuntu-latest

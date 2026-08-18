@@ -39,14 +39,27 @@ services:
             postgres:
                 condition: service_healthy
             fastapi:
-                condition: service_healthy    
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080' || exit 1"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
 
     frontend:
         build: ./Frontend 
         ports:
             - "3000:80"
         depends_on:
-            - backend
+            backend:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
 
     nginx:
         build: ./Nginx
@@ -54,8 +67,16 @@ services:
             - "80:80"
             - "443:443"
         depends_on:
-            - frontend
-            - backend
+            frontend:
+                condition: service_healthy
+            backend:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD", "wget", "--no-check-certificate", "--no-verbose", "--tries=1", "--spider", "https://localhost/"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
 
 volumes:
     pgdata:                    
