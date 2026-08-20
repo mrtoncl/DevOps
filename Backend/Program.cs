@@ -262,8 +262,11 @@ app.MapDelete("/api/users/{id}", async (int id, int actingUserId) =>
     return Results.Ok(new { message = "User deleted." });
 });
 
+var allowedOrigins = (app.Configuration["ALLOWED_ORIGINS"] ?? "http://localhost,https://localhost")
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
 app.UseCors(p => p
-    .WithOrigins("http://localhost", "https://localhost")
+    .WithOrigins(allowedOrigins)
     .AllowAnyMethod()
     .AllowAnyHeader());
 
