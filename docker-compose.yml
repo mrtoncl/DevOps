@@ -20,6 +20,7 @@ services:
 
     fastapi:
         build: ./FastApi
+        image: ${ECR_REGISTRY:-local}/devops-fastapi:latest
         ports:
             - "127.0.0.1:8000:8000"
         healthcheck:
@@ -31,6 +32,7 @@ services:
                 
     backend:
         build: ./Backend 
+        image: ${ECR_REGISTRY:-local}/devops-backend:latest
         ports: 
             - "127.0.0.1:8080:8080"
         env_file:
@@ -49,6 +51,7 @@ services:
 
     frontend:
         build: ./Frontend 
+        image: ${ECR_REGISTRY:-local}/devops-frontend:latest
         ports:
             - "127.0.0.1:3000:80"
         depends_on:
@@ -63,6 +66,7 @@ services:
 
     nginx:
         build: ./Nginx
+        image: ${ECR_REGISTRY:-local}/devops-nginx:latest
         ports:
             - "80:80"
             - "443:443"
