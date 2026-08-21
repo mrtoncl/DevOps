@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [devops]
 
+env:
+  AWS_REGION: eu-central-1
+  ECR_REGISTRY: 262786914132.dkr.ecr.eu-central-1.amazonaws.com
+  AWS_ROLE_ARN: arn:aws:iam::262786914132:role/github-actions-ecr-role
+
+
 jobs:
   backend:
     runs-on: ubuntu-latest
@@ -97,6 +103,11 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+
+    env:
+      IMAGE_NAME: devops-backend
+
     steps:
       - uses: actions/checkout@v4
 
@@ -128,6 +139,24 @@ jobs:
           docker tag ghcr.io/mrtoncl/devops-backend:${{ github.sha }} ghcr.io/mrtoncl/devops-backend:latest
           docker push ghcr.io/mrtoncl/devops-backend:latest
 
+      - name: AWS kimligini al (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'ye giris yap
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: ECR'ye push et
+        run: |
+          SRC=ghcr.io/mrtoncl/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          DST=${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag $SRC $DST:${{ github.sha }}
+          docker tag $SRC $DST:latest
+          docker push $DST:${{ github.sha }}
+          docker push $DST:latest        
+
   fastapi-image:
     needs: fastapi
     if: github.event_name == 'push'
@@ -135,6 +164,11 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+
+    env:
+      IMAGE_NAME: devops-fastapi
+
     steps:
       - uses: actions/checkout@v4
 
@@ -166,6 +200,24 @@ jobs:
           docker tag ghcr.io/mrtoncl/devops-fastapi:${{ github.sha }} ghcr.io/mrtoncl/devops-fastapi:latest
           docker push ghcr.io/mrtoncl/devops-fastapi:latest
 
+      - name: AWS kimligini al (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'ye giris yap
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: ECR'ye push et
+        run: |
+          SRC=ghcr.io/mrtoncl/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          DST=${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag $SRC $DST:${{ github.sha }}
+          docker tag $SRC $DST:latest
+          docker push $DST:${{ github.sha }}
+          docker push $DST:latest        
+
   frontend-image:
     needs: frontend
     if: github.event_name == 'push'
@@ -173,6 +225,11 @@ jobs:
     permissions:
       contents: read
       packages: write
+      id-token: write
+
+    env:
+      IMAGE_NAME: devops-frontend
+
     steps:
       - uses: actions/checkout@v4
 
@@ -204,12 +261,35 @@ jobs:
           docker tag ghcr.io/mrtoncl/devops-frontend:${{ github.sha }} ghcr.io/mrtoncl/devops-frontend:latest
           docker push ghcr.io/mrtoncl/devops-frontend:latest
 
+      - name: AWS kimligini al (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'ye giris yap
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: ECR'ye push et
+        run: |
+          SRC=ghcr.io/mrtoncl/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          DST=${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag $SRC $DST:${{ github.sha }}
+          docker tag $SRC $DST:latest
+          docker push $DST:${{ github.sha }}
+          docker push $DST:latest        
+
   nginx-image:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+      id-token: write
+
+    env:
+      IMAGE_NAME: devops-nginx
+
     steps:
       - uses: actions/checkout@v4
 
@@ -248,6 +328,24 @@ jobs:
           docker push ghcr.io/mrtoncl/devops-nginx:${{ github.sha }}
           docker tag ghcr.io/mrtoncl/devops-nginx:${{ github.sha }} ghcr.io/mrtoncl/devops-nginx:latest
           docker push ghcr.io/mrtoncl/devops-nginx:latest
+
+      - name: AWS kimligini al (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'ye giris yap
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: ECR'ye push et
+        run: |
+          SRC=ghcr.io/mrtoncl/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          DST=${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag $SRC $DST:${{ github.sha }}
+          docker tag $SRC $DST:latest
+          docker push $DST:${{ github.sha }}
+          docker push $DST:latest    
 
   e2e:
     needs: [backend, fastapi, frontend]
