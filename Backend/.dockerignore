@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+*.user
+Properties/launchSettings.json
+.DS_Store
+Dockerfile
+.dockerignore
