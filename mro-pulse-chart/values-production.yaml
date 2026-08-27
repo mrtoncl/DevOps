@@ -1,0 +1,16 @@
+backend:
+  replicaCount: 2
+  tag: "latest"  # <-- kendi güncel release tag'inle değiştir (örn. v0.3.0)
+  resources:
+    requests: { cpu: 250m, memory: 300Mi }
+    limits: { cpu: 750m, memory: 500Mi }
+  hpa:
+    minReplicas: 2
+    maxReplicas: 6
+
+frontend:
+  replicaCount: 2
+  tag: "latest"
+
+fastapi:
+  tag: "latest"

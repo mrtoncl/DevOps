@@ -1,0 +1,86 @@
+services:
+    postgres:
+        image: postgres:18-alpine
+        command: ["postgres", "-c", "log_min_duration_statement=0"]
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB}
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+            - "127.0.0.1:5432:5432"
+        volumes:
+            - pgdata:/var/lib/postgresql
+            - ./Backend/Database_backup/mro_database_dump:/docker-entrypoint-initdb.d/01-init.sql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+            interval: 5s
+            timeout: 3s
+            retries: 5
+            start_period: 10s
+
+    fastapi:
+        build: ./FastApi
+        image: ${ECR_REGISTRY:-local}/devops-fastapi:latest
+        ports:
+            - "127.0.0.1:8000:8000"
+        healthcheck:
+            test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+                
+    backend:
+        build: ./Backend 
+        image: ${ECR_REGISTRY:-local}/devops-backend:latest
+        ports: 
+            - "127.0.0.1:8080:8080"
+        env_file:
+            - .env    
+        depends_on:
+            postgres:
+                condition: service_healthy
+            fastapi:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/8080' || exit 1"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+
+    frontend:
+        build: ./Frontend 
+        image: ${ECR_REGISTRY:-local}/devops-frontend:latest
+        ports:
+            - "127.0.0.1:3000:80"
+        depends_on:
+            backend:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+
+    nginx:
+        build: ./Nginx
+        image: ${ECR_REGISTRY:-local}/devops-nginx:latest
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            frontend:
+                condition: service_healthy
+            backend:
+                condition: service_healthy
+        healthcheck:
+            test: ["CMD", "wget", "--no-check-certificate", "--no-verbose", "--tries=1", "--spider", "https://localhost/"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+
+volumes:
+    pgdata:                    

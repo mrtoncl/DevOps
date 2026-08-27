@@ -2,16 +2,37 @@ using System.Text.Json.Serialization;
 using Npgsql;
 using Dapper;
 using BCrypt.Net;
+using DbUp;
+using MroBackend.Validation;
+using MroBackend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = "Host=localhost;Database=postgres;Username=postgres;Password=";
+var connectionString = builder.Configuration["DB_CONNECTION_STRING"]
+    ?? "Host=postgres;Database=postgres;Username=postgres;Password=";
+
+var upgrader = DeployChanges.To
+    .PostgresqlDatabase(connectionString)
+    .WithScriptsFromFileSystem("Migrations")
+    .LogToConsole()
+    .Build();
+
+var migrationResult = upgrader.PerformUpgrade();
+if (!migrationResult.Successful)
+{
+    Console.WriteLine(migrationResult.Error);
+    Environment.Exit(-1);
+}
+Console.WriteLine("Migration'lar başarıyla uygulandı.");
 
 builder.Services.AddCors();
 
-builder.Services.AddHttpClient("ml", c => c.BaseAddress = new Uri("http://127.0.0.1:8000"));
+var fastApiUrl = builder.Configuration["FASTAPI_URL"] ?? "http://fastapi:8000";
+builder.Services.AddHttpClient("ml", c => c.BaseAddress = new Uri(fastApiUrl));
 
 builder.Services.AddSingleton<IPartRepository, CsvPartRepository>();
+
+builder.Services.AddSingleton(new UserRepository(connectionString));
 
 var app = builder.Build();
 
@@ -112,43 +133,27 @@ app.MapPost("/api/orders", async (OrderRequest request) =>
     return Results.Ok(new { message = "Sipariş kaydedildi." });
 });
 
-app.MapPost("/api/register", async (RegisterRequest request) =>
+app.MapPost("/api/register", async (RegisterRequest request, UserRepository userRepository) =>
 {
-    if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.FullName))
+    var validationError = RegistrationValidator.Validate(request.Username, request.FullName, request.Password);
+    if (validationError != null)
     {
-        return Results.BadRequest(new { message = "Username and full name are required." });
-    }
-    if (string.IsNullOrEmpty(request.Password) || request.Password.Length < 4)
-    {
-        return Results.BadRequest(new { message = "Password must be at least 4 characters." });
+        return Results.BadRequest(new { message = validationError });
     }
 
-    await using var connection = new NpgsqlConnection(connectionString);
-
-    var existing = await connection.QuerySingleOrDefaultAsync<int?>(
-        "SELECT id FROM users WHERE username = @Username",
-        new { request.Username }
-    );
-    if (existing != null)
+    if (await userRepository.UsernameExistsAsync(request.Username))
     {
         return Results.Conflict(new { message = "Bu kullanıcı adı zaten alınmış." });
     }
 
-    var roleId = await connection.QuerySingleOrDefaultAsync<int?>(
-        "SELECT id FROM roles WHERE name = @RoleName",
-        new { request.RoleName }
-    );
+    var roleId = await userRepository.GetRoleIdAsync(request.RoleName);
     if (roleId == null)
     {
         return Results.BadRequest(new { message = "Geçersiz rol." });
     }
 
     var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-    await connection.ExecuteAsync(
-        "INSERT INTO users (username, password_hash, full_name, role_id) VALUES (@Username, @PasswordHash, @FullName, @RoleId)",
-        new { request.Username, PasswordHash = passwordHash, request.FullName, RoleId = roleId }
-    );
+    await userRepository.RegisterAsync(request.Username, passwordHash, request.FullName, roleId.Value);
 
     return Results.Ok(new { message = "Kayıt başarılı." });
 });
@@ -257,7 +262,13 @@ app.MapDelete("/api/users/{id}", async (int id, int actingUserId) =>
     return Results.Ok(new { message = "User deleted." });
 });
 
-app.UseCors(p => p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+var allowedOrigins = (app.Configuration["ALLOWED_ORIGINS"] ?? "http://localhost,https://localhost")
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+app.UseCors(p => p
+    .WithOrigins(allowedOrigins)
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.Run();
 
@@ -310,16 +321,16 @@ class UserRecord
 }
 
 record OrderRequest(
-    string ProductId, 
-    int OrderedBy, 
-    double PredictedStockoutDay, 
+    string ProductId,
+    int OrderedBy,
+    double PredictedStockoutDay,
     double PredictedLeadTimeDays
 );
 
 record RegisterRequest(
-    string Username, 
-    string Password, 
-    string FullName, 
+    string Username,
+    string Password,
+    string FullName,
     string RoleName
 );
 
@@ -332,7 +343,7 @@ class UserListItem
 }
 
 record ChangeRoleRequest(
-    int ActingUserId, 
+    int ActingUserId,
     string NewRoleName
 );
 
@@ -347,8 +358,8 @@ class OrderHistoryItem
 }
 
 record ChangePasswordRequest(
-    string Username, 
-    string OldPassword, 
+    string Username,
+    string OldPassword,
     string NewPassword
 );
 

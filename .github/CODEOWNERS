@@ -1,0 +1,4 @@
+# .github/CODEOWNERS
+/Backend/  @mrtoncl
+/Frontend/ @mrtoncl
+/FastApi/  @mrtoncl

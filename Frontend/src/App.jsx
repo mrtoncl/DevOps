@@ -9,7 +9,7 @@ import OrderHistory from './OrderHistory';
 import ChangePassword from './ChangePassword';
 import PartDrawer from './PartDrawer';
 
-const API_BASE = 'http://localhost:5005';
+const API_BASE = '';
 
 function App() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -82,8 +82,6 @@ function App() {
     }),
   });
 }
-
-  const criticalCount = allParts.filter((p) => p.status === 'Critical').length;
 
   if (!currentUser) {
     return <AuthScreen onLoginSuccess={setCurrentUser} />;

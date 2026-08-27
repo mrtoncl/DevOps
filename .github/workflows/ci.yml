@@ -1,0 +1,412 @@
+name: CI
+
+on:
+  push:
+    branches: [devops]
+  pull_request:
+    branches: [devops]
+
+env:
+  AWS_REGION: eu-central-1
+  ECR_REGISTRY: 262786914132.dkr.ecr.eu-central-1.amazonaws.com
+  AWS_ROLE_ARN: arn:aws:iam::262786914132:role/github-actions-ecr-role
+
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: NuGet cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Format kontrolü
+        run: dotnet format --verify-no-changes
+        working-directory: Backend
+
+      - name: Build
+        run: dotnet build
+        working-directory: Backend
+
+      - name: Test
+        run: dotnet test
+        working-directory: Backend.Tests
+
+  fastapi:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: FastApi/requirements-dev.txt
+
+      - name: Bağımlılıkları kur
+        run: pip install -r requirements-dev.txt
+        working-directory: FastApi
+
+      - name: Lint
+        run: ruff check .
+        working-directory: FastApi
+
+      - name: Test
+        run: pytest -v
+        working-directory: FastApi
+
+  frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Bağımlılıkları kur
+        run: npm ci
+        working-directory: Frontend
+
+      - name: Lint
+        run: npm run lint
+        working-directory: Frontend
+
+      - name: Test
+        run: npm test
+        working-directory: Frontend
+
+      - name: Build
+        run: npm run build
+        working-directory: Frontend
+
+  backend-image:
+    needs: backend
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    env:
+      IMAGE_NAME: devops-backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Backend
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-backend:${{ github.sha }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-backend:${{ github.sha }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: |
+          docker push ghcr.io/mrtoncl/devops-backend:${{ github.sha }}
+          docker tag ghcr.io/mrtoncl/devops-backend:${{ github.sha }} ghcr.io/mrtoncl/devops-backend:latest
+          docker push ghcr.io/mrtoncl/devops-backend:latest
+
+      - name: AWS kimligini al (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'ye giris yap
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: ECR'ye push et
+        run: |
+          SRC=ghcr.io/mrtoncl/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          DST=${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag $SRC $DST:${{ github.sha }}
+          docker tag $SRC $DST:latest
+          docker push $DST:${{ github.sha }}
+          docker push $DST:latest        
+
+  fastapi-image:
+    needs: fastapi
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    env:
+      IMAGE_NAME: devops-fastapi
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./FastApi
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-fastapi:${{ github.sha }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-fastapi:${{ github.sha }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: |
+          docker push ghcr.io/mrtoncl/devops-fastapi:${{ github.sha }}
+          docker tag ghcr.io/mrtoncl/devops-fastapi:${{ github.sha }} ghcr.io/mrtoncl/devops-fastapi:latest
+          docker push ghcr.io/mrtoncl/devops-fastapi:latest
+
+      - name: AWS kimligini al (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'ye giris yap
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: ECR'ye push et
+        run: |
+          SRC=ghcr.io/mrtoncl/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          DST=${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag $SRC $DST:${{ github.sha }}
+          docker tag $SRC $DST:latest
+          docker push $DST:${{ github.sha }}
+          docker push $DST:latest        
+
+  frontend-image:
+    needs: frontend
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    env:
+      IMAGE_NAME: devops-frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Frontend
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-frontend:${{ github.sha }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-frontend:${{ github.sha }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: |
+          docker push ghcr.io/mrtoncl/devops-frontend:${{ github.sha }}
+          docker tag ghcr.io/mrtoncl/devops-frontend:${{ github.sha }} ghcr.io/mrtoncl/devops-frontend:latest
+          docker push ghcr.io/mrtoncl/devops-frontend:latest
+
+      - name: AWS kimligini al (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'ye giris yap
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: ECR'ye push et
+        run: |
+          SRC=ghcr.io/mrtoncl/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          DST=${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag $SRC $DST:${{ github.sha }}
+          docker tag $SRC $DST:latest
+          docker push $DST:${{ github.sha }}
+          docker push $DST:latest        
+
+  nginx-image:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    env:
+      IMAGE_NAME: devops-nginx
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Self-signed sertifika oluştur (build için gerekli)
+        run: |
+          mkdir -p Nginx/certs
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout Nginx/certs/selfsigned.key \
+            -out Nginx/certs/selfsigned.crt \
+            -subj "/CN=localhost"
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Nginx
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-nginx:${{ github.sha }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-nginx:${{ github.sha }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: |
+          docker push ghcr.io/mrtoncl/devops-nginx:${{ github.sha }}
+          docker tag ghcr.io/mrtoncl/devops-nginx:${{ github.sha }} ghcr.io/mrtoncl/devops-nginx:latest
+          docker push ghcr.io/mrtoncl/devops-nginx:latest
+
+      - name: AWS kimligini al (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: ECR'ye giris yap
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: ECR'ye push et
+        run: |
+          SRC=ghcr.io/mrtoncl/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          DST=${{ env.ECR_REGISTRY }}/${{ env.IMAGE_NAME }}
+          docker tag $SRC $DST:${{ github.sha }}
+          docker tag $SRC $DST:latest
+          docker push $DST:${{ github.sha }}
+          docker push $DST:latest    
+
+  e2e:
+    needs: [backend, fastapi, frontend]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: .env dosyasını oluştur (CI'a özel, secret içermiyor)
+        run: |
+          cat <<EOF > .env
+          POSTGRES_DB=postgres
+          POSTGRES_USER=postgres
+          DB_CONNECTION_STRING=Host=postgres;Database=postgres;Username=postgres;Password=
+          FASTAPI_URL=http://fastapi:8000
+          EOF
+
+      - name: Self-signed sertifika oluştur (CI'a özel)
+        run: |
+          mkdir -p Nginx/certs
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout Nginx/certs/selfsigned.key \
+            -out Nginx/certs/selfsigned.crt \
+            -subj "/CN=localhost"
+
+      - name: Stack'i ayağa kaldır
+        run: docker compose up --build -d
+
+      - name: Deploy sonrası smoke test
+        run: |
+          for i in $(seq 1 30); do
+            curl -skf https://localhost && curl -skf https://localhost/api/parts && break
+            echo "Bekleniyor... ($i)"
+            sleep 3
+            if [ "$i" -eq 30 ]; then
+              echo "Smoke test başarısız: servisler 90 saniye içinde hazır olmadı."
+              exit 1
+            fi
+          done
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Playwright'ı kur
+        run: npm ci && npx playwright install --with-deps
+        working-directory: Frontend
+
+      - name: E2E testlerini çalıştır
+        run: npx playwright test
+        working-directory: Frontend
+
+      - name: Test raporunu sakla (başarısız olursa da)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: Frontend/playwright-report/
+
+      - name: Stack'i kapat
+        if: always()
+        run: docker compose down          

@@ -1,0 +1,178 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release-notes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+
+  deploy-staging:
+    needs: release-notes
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Staging'e "deploy" (simülasyon)
+        run: |
+          echo "Staging'e deploy ediliyor: ${{ vars.DEPLOY_ORTAM_ADI }}"
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Production'a "deploy" (simülasyon)
+        run: |
+          echo "Production'a deploy ediliyor: ${{ vars.DEPLOY_ORTAM_ADI }}"
+
+  backend-release-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Backend
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-backend:${{ github.ref_name }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-backend:${{ github.ref_name }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: docker push ghcr.io/mrtoncl/devops-backend:${{ github.ref_name }}
+
+  fastapi-release-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./FastApi
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-fastapi:${{ github.ref_name }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-fastapi:${{ github.ref_name }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: docker push ghcr.io/mrtoncl/devops-fastapi:${{ github.ref_name }}
+
+  frontend-release-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Frontend
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: docker push ghcr.io/mrtoncl/devops-frontend:${{ github.ref_name }}
+
+  nginx-release-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Self-signed sertifika oluştur (build için gerekli)
+        run: |
+          mkdir -p Nginx/certs
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+            -keyout Nginx/certs/selfsigned.key \
+            -out Nginx/certs/selfsigned.crt \
+            -subj "/CN=localhost"
+
+      - name: İmajı build et (henüz pushlamadan)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./Nginx
+          push: false
+          load: true
+          tags: ghcr.io/mrtoncl/devops-nginx:${{ github.ref_name }}
+
+      - name: Trivy güvenlik taraması
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: ghcr.io/mrtoncl/devops-nginx:${{ github.ref_name }}
+          severity: CRITICAL
+          exit-code: '1'
+          ignore-unfixed: true
+
+      - name: Registry'ye push et
+        run: docker push ghcr.io/mrtoncl/devops-nginx:${{ github.ref_name }}      

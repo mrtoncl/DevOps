@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { TkCard } from '@takeoff-ui/react';
 
-const API_BASE = 'http://localhost:5005';
+const API_BASE = '';
 
 function formatDate(isoString) {
   const date = new Date(isoString);

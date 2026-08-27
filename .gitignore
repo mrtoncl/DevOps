@@ -141,3 +141,12 @@ Pods/
 /fastlane/fastlane/Appfile
 /Gemfile.lock
 /enterprise/register/Gemfile.lock
+
+.env
+node_modules/
+dist/
+.vite/
+Nginx/certs/
+bin/
+obj/
+k8s/08-db-secret.yaml
